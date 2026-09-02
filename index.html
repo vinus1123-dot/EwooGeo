@@ -3,13 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>걷는 도시 탐구 워크북 — 도시란 무엇인가 (4)</title>
-<style>
-  html{color-scheme:light dark}
-  body{margin:0}
-  img{max-width:100%}
-  [hidden]{display:none!important}
-</style>
+<title>우리 동네 공간불평등 살펴보기 — 보행도시 탐구활동지</title>
+<style>html{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <style>
 :root{
   --ground:#EFF1EE; --surface:#FFFFFF; --surface-2:#E7EAE6; --sunk:#F6F7F5;
@@ -88,16 +83,38 @@ a:hover{color:var(--ink)}
 .f.grow input{width:100%}
 
 /* ── 진도 바 ── */
-.rail{position:sticky;top:0;z-index:40;background:var(--surface);border-bottom:1px solid var(--line)}
-.railin{display:flex;align-items:center;gap:14px;padding:9px 0;flex-wrap:wrap}
-.nav{display:flex;gap:2px;flex:1;flex-wrap:wrap}
-.nav a{font-family:var(--disp);font-size:12px;font-weight:700;padding:5px 9px;border-radius:3px;
-  color:var(--muted);text-decoration:none;white-space:nowrap}
-.nav a:hover{background:var(--surface-2);color:var(--ink)}
+.rail{position:sticky;top:0;z-index:40;background:var(--surface);
+  border-bottom:2px solid var(--ink);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+.tabs{display:flex;gap:4px;padding:9px 0 0;overflow-x:auto;scrollbar-width:thin}
+.tab{position:relative;flex:1;min-width:112px;display:flex;flex-direction:column;align-items:center;
+  gap:2px;padding:10px 8px 11px;border:1px solid var(--line);border-bottom:0;
+  border-radius:5px 5px 0 0;background:var(--sunk);color:var(--muted);cursor:pointer;
+  font-family:var(--disp);white-space:nowrap;transition:background .15s,color .15s}
+.tab:hover{background:var(--surface-2);color:var(--ink)}
+.tab .tnum{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.08em;
+  color:var(--faint)}
+.tab .tnm{font-size:14px;font-weight:700}
+.tab .tmk{position:absolute;top:7px;right:9px;width:8px;height:8px;border-radius:50%;
+  background:transparent}
+.tab.done .tmk{background:var(--walk)}
+.tab[aria-selected="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.tab[aria-selected="true"] .tnum{color:var(--paint)}
+.tab[aria-selected="true"] .tnm{font-weight:900}
+.tab[aria-selected="true"].done .tmk{background:var(--paint)}
+.railin{display:flex;align-items:center;gap:14px;padding:8px 0;flex-wrap:wrap;
+  border-top:1px solid var(--line)}
 .meter{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:12px;color:var(--muted)}
-.bar{width:76px;height:5px;background:var(--surface-2);border-radius:3px;overflow:hidden}
+.bar{width:90px;height:5px;background:var(--surface-2);border-radius:3px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--walk);width:0;transition:width .3s}
-.saved{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap}
+.saved{font-family:var(--mono);font-size:11px;color:var(--faint);white-space:nowrap;
+  margin-right:auto}
+.pager{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  margin:44px 0 8px;padding-top:20px;border-top:1px solid var(--line)}
+.pgbtn{font-family:var(--disp);font-size:14.5px;font-weight:700;padding:13px 22px;border-radius:4px;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer}
+.pgbtn:hover{background:var(--surface-2)}
+.pgbtn.next{background:var(--ink);color:var(--ground);border-color:var(--ink)}
+.pgbtn.next:hover{opacity:.87}
 .btn{font-family:var(--disp);font-size:12.5px;font-weight:700;padding:7px 13px;border-radius:3px;
   border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);cursor:pointer}
 .btn:hover{background:var(--surface-2)}
@@ -234,8 +251,177 @@ td input.cell{width:100%;font-size:14px;padding:5px 0;border:0;border-bottom:1px
 #toast{font-family:var(--mono);font-size:12px;color:var(--paint);margin-top:11px;min-height:17px}
 footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--faint);line-height:1.7}
 
+
+/* ── 빈칸 채우기 ── */
+.blankwrap{display:flex;align-items:center;gap:8px;margin:4px 0 6px}
+.blankwrap.sm{margin-top:8px}
+.blab{font-family:var(--mono);font-size:10px;font-weight:600;color:#fff;background:var(--ink);
+  padding:2px 7px;border-radius:2px;flex:none}
+.blank{flex:1;min-width:0;font-family:var(--disp);font-size:15px;font-weight:700;color:var(--ink);
+  background:var(--sunk);border:0;border-bottom:2px solid var(--paint);border-radius:2px 2px 0 0;
+  padding:6px 9px}
+.blank::placeholder{font-weight:400;color:var(--faint);font-size:13px}
+.blank:focus{background:var(--surface)}
+.blank.wide{width:100%;font-size:14px}
+.wordbank{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0 4px;
+  background:var(--surface);border:1px dashed var(--line-strong);border-radius:4px;padding:12px 15px}
+.wb-lb{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--paint);margin-right:4px}
+.wb{font-family:var(--disp);font-size:13.5px;font-weight:600;padding:5px 12px;border-radius:999px;
+  background:var(--surface-2);color:var(--ink)}
+.wb-div{width:1px;height:20px;background:var(--line-strong);margin:0 4px}
+
+/* ── 읽기자료 카드 ── */
+.rcard{background:var(--surface);border:1px solid var(--line);border-radius:5px;
+  padding:24px 26px;margin:26px 0}
+.rhead{display:flex;gap:14px;align-items:flex-start;padding-bottom:14px;margin-bottom:16px;
+  border-bottom:1px solid var(--line)}
+.rtag{font-family:var(--mono);font-size:10.5px;font-weight:600;letter-spacing:.06em;color:#fff;
+  background:var(--car);padding:4px 9px;border-radius:2px;flex:none;margin-top:4px}
+.rtag.alt{background:var(--walk)}
+.rhead h3{font-family:var(--disp);font-size:21px;font-weight:900;color:var(--ink);margin:0}
+.rsub{font-family:var(--disp);font-size:13.5px;color:var(--muted);margin-top:4px}
+.cond{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:16px 0}
+.cnd{background:var(--sunk);border-radius:4px;padding:13px 15px}
+.cnd b{display:block;font-family:var(--disp);font-size:15px;color:var(--walk);margin-bottom:5px}
+.cnd span{font-family:var(--disp);font-size:13px;color:var(--ink-2);line-height:1.6}
+.q.tail{margin-left:22px;padding-left:16px;border-left:2px solid var(--line-strong)}
+.q.tail .qn{color:var(--muted)}
+
+/* ── Ⅳ 현장 답사 ── */
+.intro{background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  padding:18px 20px;margin-bottom:22px}
+.intro p{font-family:var(--disp);font-size:15px;line-height:1.75;color:var(--ink-2)}
+.sub3{font-family:var(--disp);font-size:17px;font-weight:900;color:var(--ink);
+  margin:32px 0 12px;padding-bottom:7px;border-bottom:1px solid var(--line-strong)}
+.refsite{background:var(--ink);border-radius:5px;padding:16px 20px;margin:20px 0}
+.rslb{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--paint);display:block;margin-bottom:5px}
+.rsttl{font-family:var(--disp);font-size:18px;font-weight:900;color:#fff;text-decoration:none;
+  border-bottom:2px solid var(--paint)}
+.rsttl:hover{color:var(--paint)}
+.refsite p{font-family:var(--disp);font-size:13.5px;color:#A9B4B3;margin-top:8px;line-height:1.6}
+.mapwrap{background:var(--surface);border:1px solid var(--line-strong);border-radius:5px;
+  overflow:hidden;margin:20px 0}
+.maphead{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;
+  padding:15px 18px;border-bottom:1px solid var(--line)}
+.maphead h4{font-family:var(--disp);font-size:16px;font-weight:900;margin:0}
+.maphead p{font-family:var(--disp);font-size:13px;color:var(--muted);margin-top:3px}
+.maplinks{display:flex;gap:8px}
+.mbtn{font-family:var(--disp);font-size:12.5px;font-weight:700;padding:8px 14px;border-radius:3px;
+  background:var(--walk);color:#fff;text-decoration:none;white-space:nowrap}
+.mbtn:hover{opacity:.88;color:#fff}
+.mbtn.alt{background:var(--surface-2);color:var(--ink)}
+.mapmodes{display:flex;gap:0;border:1px solid var(--line-strong);border-radius:4px;overflow:hidden}
+.mmode{font-family:var(--disp);font-size:12.5px;font-weight:700;padding:8px 15px;border:0;
+  background:var(--surface);color:var(--muted);cursor:pointer}
+.mmode.on{background:var(--ink);color:#fff}
+.maptools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 18px;
+  background:var(--sunk);border-bottom:1px solid var(--line)}
+.mtlb{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--muted)}
+.mtool{font-family:var(--disp);font-size:13px;font-weight:700;padding:7px 14px;border-radius:999px;
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink-2);cursor:pointer}
+.mtool.on{background:var(--walk);border-color:var(--walk);color:#fff}
+.mthint{font-family:var(--disp);font-size:12.5px;color:var(--muted);margin-left:4px}
+.map{position:relative;height:500px;overflow:hidden;background:var(--surface-2);
+  touch-action:none;user-select:none}
+.map.pinmode{cursor:crosshair}
+.map.panmode{cursor:grab}
+.map.drag{cursor:grabbing!important}
+.gmap iframe{display:block;width:100%;height:500px;border:0;background:var(--sunk)}
+.maplandmarks{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:11px 18px;
+  border-top:1px solid var(--line)}
+.mlb{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--paint)}
+.ml{font-family:var(--disp);font-size:12.5px;font-weight:600;padding:4px 11px;border-radius:999px;
+  background:var(--surface-2);color:var(--ink)}
+.mlink{font-family:var(--disp);font-size:12.5px;font-weight:700;color:var(--walk);
+  text-decoration:none;border-bottom:1px solid var(--walk);margin-left:4px}
+.mapcanvas{position:absolute;inset:0}
+.mapcanvas img{position:absolute;width:256px;height:256px;pointer-events:none;
+  image-rendering:auto;background:var(--surface-2)}
+.pin{position:absolute;width:26px;height:26px;margin:-26px 0 0 -13px;border-radius:50% 50% 50% 0;
+  transform:rotate(-45deg);border:2px solid #fff;box-shadow:0 2px 5px rgba(0,0,0,.4);cursor:pointer}
+.pin span{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  transform:rotate(45deg);font-family:var(--mono);font-size:11px;font-weight:600;color:#fff}
+.pin.act{outline:3px solid var(--paint);outline-offset:2px;z-index:5}
+.mapctl{position:absolute;top:12px;left:12px;display:flex;flex-direction:column;gap:4px;z-index:6}
+.mapctl button{width:34px;height:34px;font-size:17px;font-weight:700;font-family:var(--disp);
+  border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);
+  border-radius:3px;cursor:pointer;line-height:1}
+.mapctl button:hover{background:var(--surface-2)}
+.mapattr{position:absolute;right:0;bottom:0;z-index:6;font-family:var(--disp);font-size:10.5px;
+  color:var(--ink);background:rgba(255,255,255,.78);padding:2px 7px}
+.maphelp{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);z-index:6;
+  font-family:var(--disp);font-size:12.5px;font-weight:700;color:#fff;background:rgba(21,24,26,.86);
+  padding:7px 15px;border-radius:999px;white-space:nowrap;pointer-events:none}
+.maphelp.go{pointer-events:auto;cursor:pointer;background:var(--paint);color:#15181A}
+.maphelp.go:hover{background:#B07A05;color:#fff}
+.mapfall{font-family:var(--disp);font-size:12.5px;color:var(--muted);padding:9px 18px;
+  border-top:1px solid var(--line);background:var(--sunk)}
+.types{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin:14px 0}
+.ty{display:grid;grid-template-columns:14px 1fr;gap:4px 10px;background:var(--surface);
+  border:1px solid var(--line);border-radius:4px;padding:12px 14px}
+.ty .dot{width:12px;height:12px;border-radius:3px;margin-top:4px}
+.ty b{font-family:var(--disp);font-size:14.5px;color:var(--ink)}
+.ty span:last-child{grid-column:2;font-family:var(--disp);font-size:12.5px;color:var(--muted);line-height:1.55}
+.crit{display:flex;flex-wrap:wrap;gap:9px;align-items:center;background:var(--ink);
+  border-radius:4px;padding:12px 16px;margin:14px 0}
+.clb{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--paint);margin-right:4px}
+.ci{font-family:var(--disp);font-size:13px;color:#DDE2E0}
+.ci b{color:#fff;font-weight:700}
+
+/* 집계 */
+.tally{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}
+.tl{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);
+  border-radius:999px;padding:6px 14px 6px 10px;font-family:var(--disp);font-size:13px;color:var(--ink)}
+.tl .dot{width:10px;height:10px;border-radius:3px}
+.tl .n{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--ink);
+  font-variant-numeric:tabular-nums;min-width:12px;text-align:right}
+.tl.zero{opacity:.5}
+.recbar{display:flex;align-items:center;gap:14px;margin:16px 0 12px}
+.reccount{font-family:var(--mono);font-size:12.5px;color:var(--muted)}
+.emptyrec{font-family:var(--disp);font-size:13.5px;color:var(--muted);background:var(--sunk);
+  border:1px dashed var(--line-strong);border-radius:4px;padding:20px;text-align:center;line-height:1.7}
+.rec{background:var(--surface);border:1px solid var(--line-strong);border-radius:5px;
+  padding:16px 18px;margin-bottom:12px}
+.rectop{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.recno{font-family:var(--mono);font-size:12px;font-weight:600;color:#fff;background:var(--ink);
+  padding:4px 9px;border-radius:2px}
+.rec select{font-family:var(--disp);font-size:14px;font-weight:700;padding:7px 10px;border-radius:3px;
+  border:1px solid var(--line-strong);background:var(--sunk);color:var(--ink);flex:1;min-width:140px}
+.recdel{font-family:var(--disp);font-size:12px;font-weight:700;padding:6px 11px;border-radius:3px;
+  border:1px solid var(--line-strong);background:transparent;color:var(--muted);cursor:pointer}
+.recdel:hover{border-color:var(--warn);color:var(--warn)}
+.recgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.rf{display:flex;flex-direction:column;gap:5px}
+.rf label{font-family:var(--disp);font-size:11px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--muted)}
+.rf input,.rf textarea{font-family:var(--disp);font-size:14px;padding:8px 10px;border-radius:3px;
+  border:1px solid var(--line);background:var(--sunk);color:var(--ink);width:100%}
+.rf.full{grid-column:1/-1}
+.recloc{font-family:var(--mono);font-size:11.5px;color:var(--muted);white-space:nowrap}
+.recloc.none{color:var(--faint);font-style:italic}
+.lvl{display:flex;gap:6px;flex-wrap:wrap}
+.lvl label{display:inline-flex;align-items:center;gap:5px;font-family:var(--disp);font-size:13px;
+  padding:6px 11px;border:1px solid var(--line-strong);border-radius:999px;cursor:pointer;
+  background:var(--sunk);color:var(--ink-2)}
+.lvl label:has(input:checked){background:var(--warn);border-color:var(--warn);color:#fff;font-weight:700}
+.lvl input{margin:0;accent-color:var(--warn)}
+.photo{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap}
+.photo img{width:150px;height:112px;object-fit:cover;border-radius:4px;border:1px solid var(--line-strong)}
+.photobtn{font-family:var(--disp);font-size:12.5px;font-weight:700;padding:8px 13px;border-radius:3px;
+  border:1px solid var(--line-strong);background:var(--sunk);color:var(--ink);cursor:pointer}
+.photobtn:hover{background:var(--surface-2)}
+.rec.act{border-color:var(--paint);box-shadow:0 0 0 2px rgba(201,138,5,.18)}
+.locate{font-family:var(--disp);font-size:11.5px;font-weight:700;color:var(--walk);
+  background:none;border:0;cursor:pointer;padding:0;text-decoration:underline}
+
 @media print{
-  .rail,.export,.tools{display:none}
+  .rail,.export,.tools,.pager{display:none}
+  section[hidden]{display:block!important}
   body{background:#fff;font-size:11pt}
   section{padding:14px 0;break-inside:auto}
   textarea{border:0;border-bottom:1px solid #bbb;resize:none}
@@ -243,15 +429,18 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
 </style>
 </head>
 <body>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gothic+A1:wght@400;500;700;900&family=Noto+Serif+KR:wght@400;600&family=IBM+Plex+Mono:wght@400;600&display=swap">
+
+
 <header class="hero">
   <div class="wrap">
     <div class="eyebrow">도시란 무엇인가 · 토픽 2</div>
     <h1>도시성장모델과<br>걷는 도시로의 전환</h1>
-    <p class="sub">도시의 모양을 결정해 온 힘을 세 가지 모델로 읽고, 자동차를 전제로 설계된 도시가 누구를 밖에 두었는지 확인한 뒤, 우리 동네의 길 한 곳을 직접 다시 설계한다.</p>
+    <p class="sub">도시의 모양을 결정해 온 힘을 세 가지 모델로 읽고, 자동차를 전제로 설계된 도시가 누구를 밖에 두었는지 확인한 뒤, 우리 동네를 직접 걸으며 공간 불평등을 찾아 기록한다.</p>
     <div class="goals">
       <div class="goal"><b>읽기</b><span>세 성장모델을 가르는 질문 — 도시의 모양을 결정하는 힘은 무엇인가</span></div>
-      <div class="goal"><b>분석</b><span>답사 측정값을 기준값에 비추어 판정하고 도로 단면을 다시 그린다</span></div>
-      <div class="goal"><b>제안</b><span>예산과 반대 의견까지 감당하는 재설계안을 만든다</span></div>
+      <div class="goal"><b>답사</b><span>우리 동네를 직접 걸으며 이동 약자에게 불편한 곳을 찾아 기록한다</span></div>
+      <div class="goal"><b>토론</b><span>찾은 문제를 근거로 도로를 누구에게 돌려줄지 토론한다</span></div>
     </div>
   </div>
   <div class="roadband" aria-hidden="true">
@@ -268,19 +457,28 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
   <div class="f grow"><label for="mem">모둠원</label><input id="mem" name="모둠원" type="text" placeholder="이름을 쉼표로 구분해 적으세요"></div>
 </div></div>
 
-<div class="rail"><div class="wrap railin">
-  <nav class="nav" aria-label="차례">
-    <a href="#s1">Ⅰ 성장모델</a><a href="#s2">Ⅱ 자동차도시</a><a href="#s3">Ⅲ 걷는 도시</a>
-    <a href="#s4">Ⅳ 자료 해석</a><a href="#s5">Ⅴ 재설계</a><a href="#s6">Ⅵ 토론</a><a href="#s7">Ⅶ 정리</a>
-  </nav>
-  <div class="meter" title="작성한 칸 수"><div class="bar"><i id="pbar"></i></div><span id="pnum">0 / 0</span></div>
-  <span class="saved" id="saved">자동 저장 준비됨</span>
-</div></div>
+<div class="rail">
+  <div class="wrap">
+    <div class="tabs" role="tablist" aria-label="활동 차례">
+      <button class="tab" role="tab" id="t-s1" aria-controls="s1"><span class="tnum">Ⅰ</span><span class="tnm">성장모델</span><span class="tmk"></span></button>
+      <button class="tab" role="tab" id="t-s2" aria-controls="s2"><span class="tnum">Ⅱ</span><span class="tnm">읽기자료</span><span class="tmk"></span></button>
+      <button class="tab" role="tab" id="t-s3" aria-controls="s3"><span class="tnum">Ⅲ</span><span class="tnm">걷는 도시</span><span class="tmk"></span></button>
+      <button class="tab" role="tab" id="t-s4" aria-controls="s4"><span class="tnum">Ⅳ</span><span class="tnm">현장 답사</span><span class="tmk"></span></button>
+      <button class="tab" role="tab" id="t-s6" aria-controls="s6"><span class="tnum">Ⅵ</span><span class="tnm">토론</span><span class="tmk"></span></button>
+      <button class="tab" role="tab" id="t-s7" aria-controls="s7"><span class="tnum">Ⅶ</span><span class="tnm">정리</span><span class="tmk"></span></button>
+    </div>
+    <div class="railin">
+      <div class="meter" title="작성한 칸 수"><div class="bar"><i id="pbar"></i></div><span id="pnum">0 / 0</span></div>
+      <span class="saved" id="saved">자동 저장 준비됨</span>
+      <button class="btn" id="jumpExport" type="button">제출하기</button>
+    </div>
+  </div>
+</div>
 
 <main class="wrap">
 
 <!-- ══ Ⅰ ══ -->
-<section id="s1">
+<section id="s1" role="tabpanel" aria-labelledby="t-s1" hidden>
   <div class="shead"><span class="rn">Ⅰ</span><h2>도시는 어떤 모양으로 자라는가</h2><span class="kind">읽기자료 1</span></div>
   <div class="read col">
     <p>도시가 커질 때 건물과 사람은 아무렇게나 흩어지지 않는다. <b>지대(地代)와 접근성, 교통수단</b>이라는 힘이 작용하여 일정한 공간 패턴을 만들어 낸다. 20세기 초 미국의 사회학자들과 지리학자들은 이 패턴을 설명하기 위해 몇 가지 모델을 제시했다.</p>
@@ -300,8 +498,11 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
         <circle cx="80" cy="80" r="13" fill="#15181A"/>
         <text x="80" y="84" text-anchor="middle" fill="#EFF1EE" font-size="10" font-family="monospace" font-weight="600">CBD</text>
       </svg>
-      <h5>동심원모델</h5><span class="yr">Burgess · 1925</span>
-      <p>거리가 곧 지대다. 중심에서 멀어질수록 값이 싸지고 주거의 질은 올라간다.</p>
+      <div class="blankwrap"><span class="blab">A</span>
+        <input class="blank" type="text" name="모델A-이름" placeholder="모델 이름을 쓰세요"></div>
+      <span class="yr">Burgess · 1925 · 시카고 관찰</span>
+      <div class="blankwrap sm"><span class="blab">힘</span>
+        <input class="blank" type="text" name="모델A-요인" placeholder="도시의 모양을 정한 힘"></div>
     </div>
     <div class="model">
       <svg viewBox="0 0 160 160" role="img" aria-label="선형(부채꼴)모델 도식">
@@ -314,8 +515,11 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
         <circle cx="80" cy="80" r="13" fill="#15181A"/>
         <text x="80" y="84" text-anchor="middle" fill="#EFF1EE" font-size="10" font-family="monospace" font-weight="600">CBD</text>
       </svg>
-      <h5>선형모델</h5><span class="yr">Hoyt · 1939</span>
-      <p>철도와 간선도로가 성장의 방향을 정한다. 같은 성격의 지역이 한 축을 따라 길게 뻗는다.</p>
+      <div class="blankwrap"><span class="blab">B</span>
+        <input class="blank" type="text" name="모델B-이름" placeholder="모델 이름을 쓰세요"></div>
+      <span class="yr">Hoyt · 1939 · 미국 142개 도시 분석</span>
+      <div class="blankwrap sm"><span class="blab">힘</span>
+        <input class="blank" type="text" name="모델B-요인" placeholder="도시의 모양을 정한 힘"></div>
     </div>
     <div class="model">
       <svg viewBox="0 0 160 160" role="img" aria-label="다핵심모델 도식">
@@ -330,30 +534,44 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
         <circle cx="120" cy="110" r="16" fill="#1B6B58" opacity=".85"/>
         <text x="62" y="70" text-anchor="middle" fill="#EFF1EE" font-size="9" font-family="monospace" font-weight="600">CBD</text>
       </svg>
-      <h5>다핵심모델</h5><span class="yr">Harris &amp; Ullman · 1945</span>
-      <p>자동차가 보급되면 중심이 하나일 이유가 사라진다. 공항·대학·산업단지가 각각의 핵이 된다.</p>
+      <div class="blankwrap"><span class="blab">C</span>
+        <input class="blank" type="text" name="모델C-이름" placeholder="모델 이름을 쓰세요"></div>
+      <span class="yr">Harris &amp; Ullman · 1945</span>
+      <div class="blankwrap sm"><span class="blab">힘</span>
+        <input class="blank" type="text" name="모델C-요인" placeholder="도시의 모양을 정한 힘"></div>
     </div>
   </div>
   <p class="note"><b>모식도는 이론을 단순화한 그림이다.</b> 실제 도시는 이 그림처럼 매끈하지 않으며, 세 모델이 뒤섞여 나타나는 경우가 대부분이다.</p>
+  <div class="wordbank">
+    <span class="wb-lb">낱말 상자</span>
+    <span class="wb">동심원모델</span><span class="wb">선형(부채꼴)모델</span><span class="wb">다핵심모델</span>
+    <span class="wb-div"></span>
+    <span class="wb">지대와 거리</span><span class="wb">교통축</span><span class="wb">자동차</span>
+  </div>
 
   <div class="key">
     <h4>세 모델을 가르는 하나의 질문 — “도시의 모양을 결정하는 힘은 무엇인가?”</h4>
     <dl style="margin:0">
-      <div class="keyrow"><dt>동심원</dt><dd>지대와 거리. 중심에서 멀어질수록 값이 싸진다.</dd></div>
-      <div class="keyrow"><dt>선형</dt><dd>교통축. 철도와 간선도로가 성장의 방향을 정한다.</dd></div>
-      <div class="keyrow"><dt>다핵심</dt><dd>자동차. 중심이 하나일 필요가 사라진다.</dd></div>
+      <div class="keyrow"><dt>A 모델</dt><dd><input class="blank wide" type="text" name="정리-A" placeholder="무엇이 도시의 모양을 정하는가 — 한 문장으로"></dd></div>
+      <div class="keyrow"><dt>B 모델</dt><dd><input class="blank wide" type="text" name="정리-B" placeholder="무엇이 도시의 모양을 정하는가 — 한 문장으로"></dd></div>
+      <div class="keyrow"><dt>C 모델</dt><dd><input class="blank wide" type="text" name="정리-C" placeholder="무엇이 도시의 모양을 정하는가 — 한 문장으로"></dd></div>
     </dl>
     <p style="font-family:var(--disp);font-size:13.5px;color:var(--muted);margin-top:12px;line-height:1.6">
       → 세 모델을 나란히 놓으면, <b style="color:var(--ink)">교통수단이 바뀔 때마다 도시의 모양도 바뀌어 왔음</b>을 알 수 있다.</p>
   </div>
 
-  <div class="q"><div class="qt"><span class="qn">1</span><span>동심원모델과 선형모델의 가장 큰 차이는 무엇이며, 그 차이를 만든 요인은 무엇인가요?</span></div>
+  <div class="q"><div class="qt"><span class="qn">1</span><span><b>A 모델</b>과 <b>B 모델</b>의 가장 큰 차이는 무엇이며, 그 차이를 만든 요인은 무엇인가요?</span></div>
     <textarea name="Ⅰ-1" rows="3"></textarea></div>
-  <div class="q"><div class="qt"><span class="qn">2</span><span>다핵심모델이 등장할 수 있었던 기술적·사회적 조건을 설명하시오.</span></div>
+  <div class="q"><div class="qt"><span class="qn">2</span><span><b>C 모델</b>이 등장할 수 있었던 기술적·사회적 조건을 설명하시오.</span></div>
     <textarea name="Ⅰ-2" rows="3"></textarea></div>
-  <div class="q"><div class="qt"><span class="qn">3</span><span>우리 지역(또는 가장 가까운 대도시)은 세 모델 중 어느 쪽에 가장 가까운가? 근거를 들어 판단하고, 세 모델로 설명되지 않는 특징도 한 가지 적으시오.</span></div>
-    <p class="hint">아래 도구로 우리 도시의 인구·사업체 분포와 항공사진을 먼저 확인한 뒤 쓰면 근거가 단단해진다.</p>
-    <textarea name="Ⅰ-3" rows="4"></textarea></div>
+  <div class="q"><div class="qt"><span class="qn">3</span><span><b>동심원 이론(A)</b>과 <b>선형 이론(B)</b>은 각각 어떤 점에서 비판받을 수 있을까요? 두 이론의 한계를 근거를 들어 서술하시오.</span></div>
+    <p class="hint">힌트 — 언제·어느 도시를 보고 만든 이론인가? 한국의 대도시(압축 성장, 아파트 단지, 신도시, 지하철)에 그대로 들어맞는가? 이론이 설명하지 못하는 현상은 무엇인가?</p>
+    <div class="two">
+      <div><div class="h" style="color:var(--walk)">동심원 이론의 비판점</div>
+        <textarea name="Ⅰ-3-동심원비판" rows="5"></textarea></div>
+      <div><div class="h" style="color:var(--paint)">선형 이론의 비판점</div>
+        <textarea name="Ⅰ-3-선형비판" rows="5"></textarea></div>
+    </div></div>
 
   <div class="tools">
     <h4>활동 1 · 우리 도시의 성장모델 확인하기</h4>
@@ -368,7 +586,7 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
       <span class="ds">도로망만 단순하게 보고 싶을 때. 우리 도시의 골격이 방사형인지 격자형인지 판단하기 좋다.</span></div>
   </div>
 
-  <div class="q"><div class="qt"><span class="qn">활동 1</span><span>이론 모델과 우리 지역의 구조를 비교해 적으시오.</span></div>
+  <div class="q"><div class="qt"><span class="qn">활동 1</span><span>이론 모델과 우리 지역의 실제 구조를 비교해 적으시오.</span></div>
     <div class="tw"><table>
       <thead><tr><th style="width:120px">구분</th><th>내용</th></tr></thead>
       <tbody>
@@ -379,52 +597,79 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
       </tbody></table></div>
     <p class="note">종이 학습지에는 왼쪽 칸에 <b>이론 모델</b>, 오른쪽 칸에 <b>우리 지역의 실제 구조</b>를 그리게 되어 있다. 지도 화면을 캡처해 붙이거나 손으로 그린 뒤, 위 표에 차이를 글로 정리하면 된다.</p>
   </div>
+
+  <div class="pager">
+    <span></span>
+    <button class="pgbtn next" type="button" data-go="s2">다음 · Ⅱ 읽기자료 →</button>
+  </div>
 </section>
 
 <!-- ══ Ⅱ ══ -->
-<section id="s2">
-  <div class="shead"><span class="rn">Ⅱ</span><h2>자동차를 위한 도시가 만들어지기까지</h2><span class="kind">읽기자료 2</span></div>
-  <div class="read col">
-    <p>20세기 중반, 자동차는 도시계획의 전제가 되었다. 1920~30년대 건축가 <b>르 코르뷔지에</b>는 고층 건물과 넓은 자동차 도로, 그 사이의 녹지로 구성된 ‘빛나는 도시(Ville Radieuse)’를 구상했다. 기능에 따라 주거·업무·공업·여가 지역을 분리하고 그 사이를 자동차로 연결한다는 이 발상은 이후 세계의 도시계획에 깊은 영향을 남겼다. <b>도로는 더 이상 사람들이 머무는 장소가 아니라 차량이 통과하는 시설로 재정의되었다.</b></p>
-    <p>미국에서는 1956년 연방고속도로법 이후 도시를 관통하는 고속도로가 대규모로 건설되었다. 뉴욕의 도시개발 책임자 <b>로버트 모지스</b>가 추진한 고속도로 노선은 흑인과 이민자 저소득층 거주지를 가로질러 공동체를 물리적으로 갈라놓았다. 이에 맞서 저널리스트 <b>제인 제이콥스</b>는 『미국 대도시의 죽음과 삶』(1961)에서 도시의 활력은 넓은 도로가 아니라 짧은 블록, 다양한 용도의 혼합, 그리고 길 위를 오가는 사람들의 <span class="term">거리의 눈(eyes on the street)</span>에서 나온다고 주장하며 로어맨해튼 고속도로 계획을 저지했다.</p>
-    <p>자동차 중심의 도시 확산은 <span class="term">스프롤(sprawl)</span> 현상으로 이어졌다. 도시가 저밀도로 외곽에 넓게 퍼지면서 통근 거리와 에너지 소비가 늘고, 도로·상하수도 등 기반시설 설치 비용이 증가하며, 농지와 녹지가 잠식된다. 도심에서는 도로와 주차장이 지표면의 상당 부분을 차지하면서 열섬현상과 대기오염을 심화시킨다.</p>
-    <p>무엇보다 자동차 중심 도시는 <b>이동의 불평등</b>을 낳는다. 운전할 수 없는 사람 — 어린이, 고령자, 장애인, 자동차를 소유할 여력이 없는 가구 — 은 도시의 기회에 접근하기 어려워진다. 이들을 <span class="term">교통약자</span>라 부르며, 통계적으로 도시 인구의 4분의 1을 넘는다. 자동차를 전제로 설계된 도시에서 이 비율의 사람들은 ‘설계 대상 밖’에 놓여 있는 셈이다. 게다가 보행자 교통사고 사망자는 노인과 어린이에게 집중되고, 넓은 간선도로에 접한 저소득 주거지는 소음과 미세먼지를 더 많이 감당한다.</p>
+<section id="s2" role="tabpanel" aria-labelledby="t-s2" hidden>
+  <div class="shead"><span class="rn">Ⅱ</span><h2>자동차를 위한 도시가 만들어지기까지</h2><span class="kind">읽기자료</span></div>
+
+  <div class="rcard">
+    <div class="rhead"><span class="rtag">읽기자료 1</span>
+      <div><h3>르 코르뷔지에와 『빛나는 도시』</h3>
+      <p class="rsub">자동차와 효율성이 지배하는 근대 도시의 구상</p></div></div>
+    <div class="read">
+      <p>20세기 초, 산업혁명 이후 대도시는 급격한 인구 집중으로 인해 혼잡, 오염, 불쾌한 주거 환경에 시달리고 있었습니다. 이 문제를 해결하기 위해 근대 건축의 거장 <b>르 코르뷔지에</b>(Le Corbusier)는 1930년대에 기존 도시를 완전히 해체하고 새로 짓는 파격적인 구상인 <span class="term">‘빛나는 도시(Ville Radieuse)’</span>를 제안합니다.</p>
+      <p>르 코르뷔지에의 핵심 아이디어는 <b>‘기능의 분리’</b>와 <b>‘공간의 수직적 통합’</b>이었습니다. 그는 도시의 기능을 주거, 업무, 산업, 여가의 4가지로 엄격히 나누고, 이를 거대한 도로망으로 연결하고자 했습니다. 도시 중심부에는 거대한 고층 아파트(초고층 주거 타워)를 드문드문 배치하여 땅을 솟구치게 만들고, 건물이 차지하지 않은 지상 공간의 80~90%는 넓은 녹지 공원과 거대한 차도로 채웠습니다.</p>
+      <p>이 구상에서 가장 중요한 주인공은 바로 <b>‘자동차’</b>였습니다. 르 코르뷔지에는 “도시는 속도를 위해 설계되어야 한다”고 믿었습니다. 그는 지상 도로를 오직 자동차가 빠르고 원활하게 통과하는 <b>‘통과 시설’</b>로 재정의했습니다. 사람이 걷는 보도와 차도는 완벽히 분리되었으며, 길거리에 소규모 가게나 점포가 늘어서서 사람들이 머무는 것은 ‘비효율’이자 ‘위험’으로 여겨졌습니다. 위에서 내려다보는 <b>조감도 시선</b>으로 본 이 도시 모델은 현대의 아파트 단지 개발, 차로 확장, 위성도시 설계에 결정적인 영향을 미쳤습니다.</p>
+      <p>그러나 이러한 기능주의 도시 계획은 골목길을 없애고, 보행자를 지상에서 밀어내어 자동차 없이는 이동하기 힘든 <span class="term">‘자동차 중심 도시’</span>를 낳는 결과를 가져왔습니다.</p>
+    </div>
   </div>
 
+  <div class="q"><div class="qt"><span class="qn">탐구 1</span><span>르 코르뷔지에가 생각한 ‘도로’의 본래 목적은 무엇이며, 이러한 관점이 실제 도시에서 보행자(특히 어린이, 고령자 등 교통약자)의 삶에 어떠한 영향을 미쳤는지 설명해 봅시다.</span></div>
+    <textarea name="Ⅱ-1-1" rows="4"></textarea></div>
+  <div class="q"><div class="qt"><span class="qn">탐구 2</span><span>오늘날 우리 동네나 주변 아파트 단지, 대형 도로에서 르 코르뷔지에의 ‘기능 분리’와 ‘자동차 우선’ 흔적을 찾을 수 있는 공간은 어디인가요?</span></div>
+    <textarea name="Ⅱ-1-2" rows="4"></textarea></div>
+
+  <div class="rcard">
+    <div class="rhead"><span class="rtag alt">읽기자료 2</span>
+      <div><h3>제인 제이콥스와 『미국 대도시의 죽음과 삶』</h3>
+      <p class="rsub">길 위의 삶과 ‘거리의 눈’이 만드는 보행도시의 활력</p></div></div>
+    <div class="read">
+      <p>1950~60년대 미국 뉴욕에서는 르 코르뷔지에식 사상을 집행하던 강력한 도시계획가 <b>로버트 모지스</b>가 도시 한복판을 관통하는 거대한 고속도로 건설을 추진하고 있었습니다. 오래된 마을과 골목길을 밀어버리고 자동차 통행을 원활하게 만들겠다는 구상이었으나, 이 과정에서 저소득층의 주거 공동체가 무참히 파괴되었습니다.</p>
+      <p>이에 맞서 싸운 인물이 바로 건축이나 도시계획을 전문으로 공부하지 않은 저널리스트이자 시민 운동가 <b>제인 제이콥스</b>(Jane Jacobs)였습니다. 그녀는 1961년 출간한 저서 『미국 대도시의 죽음과 삶』을 통해 거창한 행정가들의 도시계획이 오히려 도시의 활력을 죽이고 있다고 강력히 비판했습니다.</p>
+      <p>제이콥스는 도시를 ‘위에서 내려다보는 완벽한 도면’으로 보지 않고, <b>‘거리 위에서 실제로 살아가는 사람들의 시선’</b>으로 바라보았습니다. 그녀가 주장한 생동감 있는 보행도시의 조건은 다음과 같습니다.</p>
+    </div>
+    <div class="cond">
+      <div class="cnd"><b>용도의 혼합</b><span>주거·상업·업무 공간이 섞여 있어 밤낮없이 사람들이 거리를 오가야 합니다.</span></div>
+      <div class="cnd"><b>짧은 블록</b><span>블록이 짧아야 사람들이 다양한 길로 우회하며 서로 부딪히고 소통할 수 있습니다.</span></div>
+      <div class="cnd"><b>오래된 건물의 존재</b><span>다양성을 갖춘 가게와 이웃들이 낮은 임대료로 상주할 수 있어야 합니다.</span></div>
+    </div>
+    <div class="read">
+      <p>제이콥스는 특히 <span class="term">‘거리의 눈(eyes on the street)’</span>이라는 개념을 강조했습니다. 범죄 예방과 안전은 경찰이나 CCTV가 만드는 것이 아니라, 상점 주인, 아이를 바라보는 부모, 길가를 산책하는 이웃들이 자연스럽게 거리를 감시하고 상호작용할 때 완성된다는 것입니다. 그녀에게 도로는 단순한 통로가 아니라 <b>‘이웃과 만나는 광장이자 보행자들의 무대’</b>였습니다.</p>
+    </div>
+  </div>
+
+  <div class="q"><div class="qt"><span class="qn">탐구 1</span><span>제인 제이콥스가 말한 ‘거리의 눈’이 작동하려면 거리의 형태와 상점, 보행 환경이 어떠해야 하는지 설명해 봅시다.</span></div>
+    <textarea name="Ⅱ-2-1" rows="4"></textarea></div>
+  <div class="q"><div class="qt"><span class="qn">탐구 2</span><span>로버트 모지스의 ‘흐름(차량)으로서의 도시’와 제인 제이콥스의 ‘장소(사람)로서의 도시’ 관점을 비교하고, 내가 생각하는 이상적인 보행도시의 조건 2가지를 제안해 봅시다.</span></div>
+    <div class="two">
+      <div><div class="h" style="color:var(--car)">모지스 — 흐름으로서의 도시</div><textarea name="Ⅱ-2-2-모지스" rows="4"></textarea></div>
+      <div><div class="h" style="color:var(--walk)">제이콥스 — 장소로서의 도시</div><textarea name="Ⅱ-2-2-제이콥스" rows="4"></textarea></div>
+    </div>
+    <p class="hint" style="margin-top:12px">내가 제안하는 보행도시의 조건 2가지</p>
+    <textarea name="Ⅱ-2-2-제안" rows="3"></textarea></div>
   <div class="tools">
-    <h4>확인해 볼 자료</h4>
-    <p class="lead">‘교통약자가 도시 인구의 4분의 1을 넘는다’는 문장과 ‘보행 사망자가 노인·어린이에 집중된다’는 문장은 실제 통계로 확인할 수 있다. 직접 숫자를 찾아 읽기자료를 검증해 보자.</p>
+    <h4>더 확인해 볼 자료</h4>
+    <p class="lead">읽기자료의 주장을 실제 통계와 영상으로 검증해 봅시다.</p>
     <div class="tool"><span class="tag">통계</span><span class="nm"><a href="https://www.index.go.kr/unity/potal/main/EachDtlPageDetail.do?idx_cd=A0012" target="_blank" rel="noopener">e-나라지표 · 교통약자 현황</a></span>
-      <span class="ds">우리나라 교통약자 수와 인구 대비 비율의 연도별 추이. 읽기자료의 ‘4분의 1’이 지금도 맞는지 확인하고, 어떤 집단이 가장 많은지 살펴본다.</span></div>
-    <div class="tool"><span class="tag">보도자료</span><span class="nm"><a href="https://www.molit.go.kr/srocm/USR/N0201/m_13551/dtl.jsp?id=95087050" target="_blank" rel="noopener">국토교통부 · 교통약자 이동편의 실태조사</a></span>
-      <span class="ds">저상버스 보급률, 보행환경 만족도 등 이동편의시설의 실제 설치 수준을 담은 국가 조사. 최신 연도 보도자료는 국토부 보도자료 검색에서 ‘교통약자’로 찾으면 된다.</span></div>
-    <div class="tool"><span class="tag">지도</span><span class="nm"><a href="https://taas.koroad.or.kr/web/shp/sbm/initGisAnals.do?menuId=WEB_KMP_GIS_TAS" target="_blank" rel="noopener">TAAS · 교통사고 GIS 분석</a></span>
-      <span class="ds">도로교통공단. 우리 동네 보행자 사고 지점을 지도에 띄울 수 있다. 답사 구간에 사고가 몰려 있는지 확인하면 Ⅴ의 ‘진단’에 쓸 증거가 된다.</span></div>
+      <span class="ds">우리나라 교통약자 수와 인구 대비 비율의 연도별 추이. 최신 수치를 직접 확인해 위 문장을 검증해 보세요.</span></div>
     <div class="tool"><span class="tag">영상</span><span class="nm"><a href="https://www.youtube.com/watch?v=hKjkjntspfA" target="_blank" rel="noopener">Citizen Jane: Battle for the City (예고편)</a></span>
-      <span class="ds">모지스와 제이콥스의 대립을 다룬 다큐멘터리 예고편(영어, 약 2분). 자동차 도로가 동네를 가르는 장면이 그대로 나온다.</span></div>
+      <span class="ds">모지스와 제이콥스의 대립을 다룬 다큐멘터리 예고편(영어, 약 2분).</span></div>
   </div>
 
-  <div class="q"><div class="qt"><span class="qn">1</span><span>르 코르뷔지에식 계획의 핵심 원리 두 가지를 쓰고, 그것이 보행 환경에 어떤 결과를 가져왔는지 설명하시오.</span></div>
-    <textarea name="Ⅱ-1" rows="3"></textarea></div>
-
-  <div class="q"><div class="qt"><span class="qn">2</span><span>모지스와 제이콥스의 대립을 ‘도시를 무엇으로 보는가’라는 관점의 차이로 정리하시오.</span></div>
-    <div class="two">
-      <div><div class="h" style="color:var(--car)">로버트 모지스의 관점</div><textarea name="Ⅱ-2-모지스" rows="4"></textarea></div>
-      <div><div class="h" style="color:var(--walk)">제인 제이콥스의 관점</div><textarea name="Ⅱ-2-제이콥스" rows="4"></textarea></div>
-    </div></div>
-
-  <div class="q"><div class="qt"><span class="qn">3</span><span>스프롤이 생태계와 재정 양쪽에 부담을 주는 이유를 각각 한 문장으로 쓰시오.</span></div>
-    <div class="two">
-      <div><div class="h">생태계에 주는 부담</div><textarea name="Ⅱ-3-생태계" rows="2"></textarea></div>
-      <div><div class="h">재정에 주는 부담</div><textarea name="Ⅱ-3-재정" rows="2"></textarea></div>
-    </div></div>
-
-  <div class="q"><div class="qt"><span class="qn">4</span><span>‘교통약자’의 관점에서 볼 때, 자동차 중심 도시의 문제는 단순한 불편함이 아니라 무엇의 문제인가? 앞 차시의 환경정의 개념과 연결하여 서술하시오.</span></div>
-    <textarea name="Ⅱ-4" rows="4"></textarea></div>
+  <div class="pager">
+    <button class="pgbtn" type="button" data-go="s1">← 이전 · Ⅰ 성장모델</button>
+    <button class="pgbtn next" type="button" data-go="s3">다음 · Ⅲ 걷는 도시 →</button>
+  </div>
 </section>
 
 <!-- ══ Ⅲ ══ -->
-<section id="s3">
+<section id="s3" role="tabpanel" aria-labelledby="t-s3" hidden>
   <div class="shead"><span class="rn">Ⅲ</span><h2>걷는 도시로의 전환</h2><span class="kind">읽기자료 3</span></div>
   <div class="read col">
     <p>20세기 후반부터 자동차 중심 도시에 대한 반성이 이어졌다. 그 흐름은 크게 세 가지 개념으로 정리할 수 있다.</p>
@@ -456,128 +701,154 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
         <tr><td class="lab">우리 동네 사례</td><td><textarea name="Ⅲ-1-사례-무장애" rows="2"></textarea></td><td><textarea name="Ⅲ-1-사례-UD" rows="2"></textarea></td></tr>
       </tbody></table></div></div>
 
-  <div class="q"><div class="qt"><span class="qn">2</span><span>‘15분 도시’가 성립하려면 도시의 밀도와 용도 배치가 어떠해야 하는지, 도시성장모델(Ⅰ)과 연결하여 설명하시오.</span></div>
-    <p class="hint">힌트 — 기능을 분리한 도시와 섞은 도시 중 어느 쪽이 15분 안에 다 닿을 수 있을까? 세 모델 중 어느 쪽이 15분 도시와 가장 멀까?</p>
+  <div class="q"><div class="qt"><span class="qn">2</span><span>‘15분 도시’가 성립하려면 도시의 밀도와 용도 배치가 어떠해야 하는지, Ⅰ의 도시성장모델과 연결하여 설명하시오.</span></div>
+    <p class="hint">힌트 — 기능을 분리한 도시와 섞은 도시 중 어느 쪽이 15분 안에 다 닿을 수 있을까? A·B·C 중 어느 쪽이 15분 도시와 가장 멀까?</p>
     <textarea name="Ⅲ-2" rows="4"></textarea></div>
 
   <div class="q"><div class="qt"><span class="qn">3</span><span>보행환경 개선이 오히려 원주민을 밀어낼 수 있다는 지적에 대해, 그것을 막기 위한 방안을 한 가지 제안하시오.</span></div>
     <textarea name="Ⅲ-3" rows="3"></textarea></div>
+
+  <div class="pager">
+    <button class="pgbtn" type="button" data-go="s2">← 이전 · Ⅱ 읽기자료</button>
+    <button class="pgbtn next" type="button" data-go="s4">다음 · Ⅳ 현장 답사 →</button>
+  </div>
 </section>
 
 <!-- ══ Ⅳ ══ -->
-<section id="s4">
-  <div class="shead"><span class="rn">Ⅳ</span><h2>우리가 측정한 길 다시 읽기</h2><span class="kind">자료 해석</span></div>
-  <p class="read col" style="margin-bottom:6px">지난 답사의 보행환경 점검표를 꺼내, 측정값을 아래 기준에 비추어 판정하시오.</p>
-  <p class="note"><b>기준값은 국내 관련 지침의 통상적 수준이다.</b> 정확한 법정 기준은 도로의 등급과 상황에 따라 다르므로, 아래 ‘기준 확인’ 도구에서 직접 찾아 확인한 뒤 판정하는 것이 원칙이다.</p>
+<section id="s4" role="tabpanel" aria-labelledby="t-s4" hidden>
+  <div class="shead"><span class="rn">Ⅳ</span><h2>우리 동네 공간불평등 살펴보기</h2><span class="kind">현장 답사</span></div>
+  <div class="intro">
+    <p>교과서에서는 영화 〈기생충〉의 <b>‘끊임없이 아래로 이어진 계단’</b>이 공간 불평등을 상징한다고 이야기했습니다. 우리 학교와 동네에도 그런 계단이 있을까요? 아래 지도에서 답사 구역을 정하고, <b>이동 약자에게 불편한 곳</b>과 <b>접근성이 좋아 칭찬할 곳</b>을 직접 걸어서 찾아 기록해 봅시다.</p>
+  </div>
 
+  <!-- 참고 사이트 -->
+  <div class="refsite">
+    <div>
+      <span class="rslb">함께 쓰면 좋은 웹앱</span>
+      <a class="rsttl" href="https://mintmap36.github.io/mintmap4/" target="_blank" rel="noopener">우리동네 공간불평등 살펴보기 ↗</a>
+      <p>학급 전체가 같은 지도에 제보를 모으고 싶을 때 쓰세요. 아래 활동지 지도는 <b>우리 모둠의 기록</b>을 남기는 곳입니다.</p>
+    </div>
+  </div>
+
+  <!-- 클릭형 제보 지도 -->
+  <div class="mapwrap">
+    <div class="maphead">
+      <div><h4>답사 지도 — 이우학교 · 동천역 · 미금역 · 수지구청역 일대</h4>
+        <p>네 곳이 모두 들어오는 범위입니다. 우리 모둠 구역을 찾아 <b>지도를 클릭</b>해 제보를 남기세요.</p></div>
+      <div class="mapmodes" role="group" aria-label="지도 보기 방식">
+        <button type="button" class="mmode on" id="mvOsm">제보 지도</button>
+        <button type="button" class="mmode" id="mvGoo">구글 지도</button>
+      </div>
+    </div>
+
+    <div class="maptools" id="maptools">
+      <span class="mtlb">마우스 모드</span>
+      <button type="button" class="mtool on" id="mdPin"><span aria-hidden="true">📍</span> 제보 찍기</button>
+      <button type="button" class="mtool" id="mdPan"><span aria-hidden="true">✋</span> 지도 이동</button>
+      <span class="mthint" id="mthint">지도를 클릭하면 그 자리에 핀이 꽂힙니다. 끌면 이동도 됩니다.</span>
+    </div>
+
+    <div class="map pinmode" id="map">
+      <div class="mapcanvas" id="mapcanvas"></div>
+      <div class="mapctl">
+        <button type="button" id="zin" aria-label="확대">＋</button>
+        <button type="button" id="zout" aria-label="축소">－</button>
+        <button type="button" id="zhome" aria-label="처음 범위로">⌂</button>
+      </div>
+      <div class="mapattr">지도 © OpenStreetMap 기여자</div>
+      <div class="maphelp" id="maphelp">지도를 클릭해 제보 위치를 찍으세요</div>
+    </div>
+
+    <div class="gmap" id="gmap" hidden>
+      <iframe title="이우학교·동천역·미금역·수지구청역 일대 구글지도" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://maps.google.com/maps?ll=37.3315,127.0980&amp;z=14&amp;q=%EC%9A%A9%EC%9D%B8%EC%8B%9C%20%EC%88%98%EC%A7%80%EA%B5%AC%20%EB%8F%99%EC%B2%9C%EB%8F%99&amp;hl=ko&amp;output=embed"></iframe>
+    </div>
+
+    <div class="maplandmarks">
+      <span class="mlb">범위 안 주요 지점</span>
+      <span class="ml">이우학교</span><span class="ml">동천역</span><span class="ml">미금역</span><span class="ml">수지구청역</span>
+      <a class="mlink" href="https://www.google.com/maps/@37.3315,127.0980,14z" target="_blank" rel="noopener">구글지도 새 창 ↗</a>
+      <a class="mlink" href="https://map.kakao.com/?q=%EC%9A%A9%EC%9D%B8%EC%8B%9C%20%EC%88%98%EC%A7%80%EA%B5%AC%20%EB%8F%99%EC%B2%9C%EB%8F%99" target="_blank" rel="noopener">로드뷰 ↗</a>
+    </div>
+    <p class="mapfall">지도 타일이 회색으로만 보이면 인터넷이 차단된 환경입니다. <b>구글 지도</b> 탭이나 새 창 링크로 위치를 확인하고, 아래 <b>＋ 위치 없이 제보 추가</b>로 기록만 남길 수 있습니다.</p>
+  </div>
+
+  <!-- 조사 항목 안내 -->
+  <h3 class="sub3">조사 항목 — 무엇을 찾을까</h3>
+  <div class="types">
+    <div class="ty"><span class="dot" style="background:#C0392B"></span><b>계단만 있음</b><span>경사로 없이 계단만 있는 출입구·통로</span></div>
+    <div class="ty"><span class="dot" style="background:#E0A82E"></span><b>문턱 / 단차</b><span>연석·출입구의 턱 (기준 2cm 이하)</span></div>
+    <div class="ty"><span class="dot" style="background:#8E6FC4"></span><b>좁은 통로</b><span>보도 유효폭 부족 (권장 1.8m 이상)</span></div>
+    <div class="ty"><span class="dot" style="background:#A9541F"></span><b>파손된 보도블록</b><span>깨짐·들뜸·물 고임</span></div>
+    <div class="ty"><span class="dot" style="background:#1B6B58"></span><b>접근성 좋음</b><span>칭찬하고 싶은 곳</span></div>
+    <div class="ty"><span class="dot" style="background:#6E7275"></span><b>기타</b><span>불법 주정차, 볼라드, 신호시간 등</span></div>
+  </div>
+  <div class="crit">
+    <span class="clb">현장 판정 기준</span>
+    <span class="ci"><b>보도 유효폭</b> 1.8 m 이상</span>
+    <span class="ci"><b>연석 단차</b> 2 cm 이하</span>
+    <span class="ci"><b>횡단 녹색시간</b> 보행속도 1.0 m/s 기준</span>
+    <span class="ci"><b>생활도로</b> 30 km/h</span>
+  </div>
+  <p class="note">기준값은 국내 관련 지침의 통상적 수준입니다. 정확한 법정 기준은 도로 등급에 따라 다르므로
+    <a href="https://www.molit.go.kr/USR/I0204/m_45/dtl.jsp?idx=15594" target="_blank" rel="noopener">국토교통부 「보도설치 및 관리지침」</a>에서 확인한 뒤 판정하세요.
+    측정 도구가 없으면 <b>줄자·발걸음(성인 한 걸음 약 70cm)·휴대폰 자 앱</b>을 쓰고, 잰 방법을 함께 적습니다.</p>
+
+  <!-- 모둠 준비 -->
+  <h3 class="sub3">모둠 준비 — 구역과 역할 나누기</h3>
   <div class="tw"><table>
-    <thead><tr><th style="width:150px">항목</th><th style="width:190px">참고 기준</th><th style="width:110px">우리 측정값</th><th>판정 · 해석</th></tr></thead>
+    <thead><tr><th style="width:150px">항목</th><th>모둠이 정한 내용</th></tr></thead>
     <tbody>
-      <tr><td class="lab">보도 유효폭</td><td><span class="ref">휠체어 교행 1.8m 이상 권장</span></td><td><input class="cell" type="text" name="Ⅳ-보도폭-값" placeholder="m"></td><td><textarea name="Ⅳ-보도폭-판정" rows="2"></textarea></td></tr>
-      <tr><td class="lab">횡단 녹색시간</td><td><span class="ref">보행속도 1.0m/s 기준 산정</span></td><td><input class="cell" type="text" name="Ⅳ-녹색시간-값" placeholder="초"></td><td><textarea name="Ⅳ-녹색시간-판정" rows="2"></textarea></td></tr>
-      <tr><td class="lab">연석 단차</td><td><span class="ref">2cm 이하</span></td><td><input class="cell" type="text" name="Ⅳ-단차-값" placeholder="cm"></td><td><textarea name="Ⅳ-단차-판정" rows="2"></textarea></td></tr>
-      <tr><td class="lab">생활도로 제한속도</td><td><span class="ref">시속 30km (5030 정책)</span></td><td><input class="cell" type="text" name="Ⅳ-제한속도-값" placeholder="km/h"></td><td><textarea name="Ⅳ-제한속도-판정" rows="2"></textarea></td></tr>
-      <tr><td class="lab">도로 단면 중 차량 점유</td><td><span class="ref">— 비교용</span></td><td><input class="cell" type="text" name="Ⅳ-차량점유-값" placeholder="%"></td><td><textarea name="Ⅳ-차량점유-판정" rows="2"></textarea></td></tr>
+      <tr><td class="lab">우리 모둠 답사 구역</td><td><input class="cell" type="text" name="Ⅳ-구역" placeholder="예: 동천동 행정복지센터 ~ 동천초등학교 앞 사거리"></td></tr>
+      <tr><td class="lab">답사 날짜 · 시간</td><td><input class="cell" type="text" name="Ⅳ-일시" placeholder="예: 5월 12일 오후 2시~3시 30분"></td></tr>
+      <tr><td class="lab">역할 분담</td><td><textarea name="Ⅳ-역할" rows="2" placeholder="예: 측정 ○○○ / 사진 ○○○ / 기록 ○○○ / 지도 표시 ○○○"></textarea></td></tr>
+      <tr><td class="lab">준비물</td><td><textarea name="Ⅳ-준비물" rows="2" placeholder="줄자, 휴대폰(사진·지도), 필기구, 안전조끼 등"></textarea></td></tr>
+      <tr><td class="lab">안전 수칙</td><td><textarea name="Ⅳ-안전" rows="2" placeholder="차도로 내려가지 않기, 2인 1조 이동, 사유지·타인 촬영 주의 등"></textarea></td></tr>
     </tbody></table></div>
 
-  <div class="tools">
-    <h4>기준 확인 · 측정 도구</h4>
-    <p class="lead">현장에서 재지 못한 값도 아래 도구로 확인할 수 있다. 로드뷰의 거리재기 기능을 쓰면 교실에서도 폭을 대략 잴 수 있다.</p>
-    <div class="tool"><span class="tag">기준</span><span class="nm"><a href="https://www.molit.go.kr/USR/I0204/m_45/dtl.jsp?idx=15594" target="_blank" rel="noopener">국토교통부 · 보도설치 및 관리지침</a></span>
-      <span class="ds">보도의 최소 유효폭과 턱 낮추기 기준이 담긴 국가 지침. 우리 학습지의 ‘1.8m’와 지침의 값을 비교해 보는 것 자체가 좋은 활동이다.</span></div>
-    <div class="tool"><span class="tag">기준</span><span class="nm"><a href="https://www.molit.go.kr/USR/NEWS/m_71/dtl.jsp?id=95085438" target="_blank" rel="noopener">국토교통부 · 안전속도 5030 시행 보도자료</a></span>
-      <span class="ds">도시부 간선도로 50km/h, 생활도로 30km/h 정책의 근거와 시행 시기. 왜 30인지에 대한 설명도 함께 나온다.</span></div>
-    <div class="tool"><span class="tag">측정</span><span class="nm"><a href="https://map.kakao.com/" target="_blank" rel="noopener">카카오맵 로드뷰 · 거리재기</a></span>
-      <span class="ds">답사 구간 주소를 넣고 로드뷰로 현장을 다시 본다. 지도의 <code>거리</code> 도구로 보도 폭과 횡단보도 길이를 재면 측정값을 보완할 수 있다.</span></div>
-    <div class="tool"><span class="tag">확인</span><span class="nm"><a href="https://map.vworld.kr/" target="_blank" rel="noopener">브이월드 항공사진</a></span>
-      <span class="ds">위에서 내려다본 도로 전체 폭을 확인해, 차도와 보도의 비율을 계산할 때 쓴다.</span></div>
+  <!-- 제보 -->
+  <h3 class="sub3">제보 기록 — 찾은 곳을 등록하기</h3>
+  <div class="tally" id="tally"></div>
+  <div class="recbar">
+    <button class="btn pri" id="addrec" type="button">＋ 위치 없이 제보 추가</button>
+    <span class="reccount" id="reccount">등록된 제보 0건</span>
   </div>
+  <div id="records"></div>
+  <p class="emptyrec" id="emptyrec">아직 등록된 제보가 없습니다. <b>지도를 클릭</b>하면 그 자리에 제보가 만들어집니다. 모둠에서 필요한 만큼 자유롭게 늘릴 수 있습니다.</p>
 
-  <div class="cutwrap">
-    <h4>도로 단면 편집기</h4>
-    <p class="lead">왼쪽에 <b>측정한 현재 단면</b>을, 오른쪽에 <b>우리가 제안하는 단면</b>을 미터 단위로 맞춰 보자. 슬라이더를 움직이면 띠가 다시 그려지고 차량 점유율이 계산된다. 두 단면의 총폭을 같게 두는 것이 원칙이다 — 도로는 넓어지지 않으므로, 무엇을 늘리려면 무엇을 줄여야 한다.</p>
-    <div class="cuts">
-      <div class="cut" data-cut="now">
-        <h5>현재 단면</h5>
-        <div class="sec" role="img" aria-label="현재 도로 단면"></div>
-        <div class="sliders"></div>
-        <div class="stat">
-          <div><span class="lb">총폭</span><b class="tot">0</b> m</div>
-          <div style="text-align:right"><span class="lb">차량 점유</span><b class="pct">0</b> %</div>
-        </div>
-      </div>
-      <div class="cut" data-cut="plan">
-        <h5>우리가 제안하는 단면</h5>
-        <div class="sec" role="img" aria-label="제안 도로 단면"></div>
-        <div class="sliders"></div>
-        <div class="stat">
-          <div><span class="lb">총폭</span><b class="tot">0</b> m</div>
-          <div style="text-align:right"><span class="lb">차량 점유</span><b class="pct">0</b> %</div>
-        </div>
-      </div>
-    </div>
-    <div class="q" style="margin:22px 0 0">
-      <div class="qt"><span class="qn">기록</span><span>단면을 이렇게 바꾼 이유와, 줄어드는 차량 공간 때문에 생길 문제를 함께 적으시오.</span></div>
-      <textarea name="Ⅳ-단면-설명" rows="3"></textarea>
-    </div>
-  </div>
+  <!-- 모둠 자유 정리 -->
+  <h3 class="sub3">모둠 정리 — 우리가 찾은 것</h3>
+  <div class="q"><div class="qt"><span class="qn">1</span><span>답사 구역에서 <b>이동 약자에게 가장 위험하거나 불편했던 곳</b>은 어디였나요? 그렇게 판단한 근거를 측정값과 함께 쓰세요.</span></div>
+    <textarea name="Ⅳ-정리-최악" rows="3"></textarea></div>
+  <div class="q"><div class="qt"><span class="qn">2</span><span>반대로 <b>칭찬하고 싶은 곳</b>은 어디였나요? 무엇이 잘 되어 있었는지 쓰세요.</span></div>
+    <textarea name="Ⅳ-정리-칭찬" rows="3"></textarea></div>
+  <div class="q"><div class="qt"><span class="qn">3</span><span>불편한 곳들이 <b>특정 지역에 몰려 있었나요?</b> 몰려 있었다면 그 지역은 어떤 곳인지, 이것이 ‘공간 불평등’과 어떻게 연결되는지 쓰세요.</span></div>
+    <textarea name="Ⅳ-정리-분포" rows="4"></textarea></div>
+  <div class="q"><div class="qt"><span class="qn">4</span><span><b>모둠 자유 기록</b> — 위 항목에 담기지 않았지만 남기고 싶은 관찰, 주민 인터뷰, 사진 설명, 지도에 그린 내용 등을 자유롭게 적으세요.</span></div>
+    <textarea name="Ⅳ-정리-자유" rows="6" placeholder="모둠에서 나온 이야기를 그대로 옮겨 적어도 좋습니다."></textarea></div>
 
   <div class="tools">
-    <h4>단면도를 제대로 그려 보고 싶다면</h4>
-    <p class="lead">위 편집기는 비율만 다루는 간단한 도구다. 발표용 단면도를 만들려면 아래 전문 도구를 쓰자. 둘 다 무료이고 설치가 필요 없다.</p>
-    <div class="tool"><span class="tag">추천</span><span class="nm"><a href="https://streetmix.net/" target="_blank" rel="noopener">Streetmix</a></span>
-      <span class="ds">차로·보도·자전거도로·가로수·버스정류장을 끌어다 놓아 도로 단면을 그리는 웹 도구. 폭을 미터로 바꿀 수 있고, 그림을 이미지로 저장해 발표 자료에 넣을 수 있다. <b>Ⅴ의 재설계안을 시각화하는 데 가장 적합하다.</b></span></div>
-    <div class="tool"><span class="tag">대안</span><span class="nm"><a href="https://www.urbaninnovators.com/streetplan" target="_blank" rel="noopener">StreetPlan.net</a></span>
-      <span class="ds">Streetmix와 비슷한 무료 도구. 접속이 원활하지 않을 때의 대안으로 쓴다.</span></div>
+    <h4>답사에 도움이 되는 도구</h4>
+    <p class="lead">현장에서 재지 못한 값은 교실에서 아래 도구로 보완할 수 있습니다.</p>
+    <div class="tool"><span class="tag">지도</span><span class="nm"><a href="https://map.kakao.com/" target="_blank" rel="noopener">카카오맵 로드뷰 · 거리재기</a></span>
+      <span class="ds">답사 구간을 다시 보고, 지도의 <code>거리</code> 도구로 보도 폭과 횡단보도 길이를 잴 수 있습니다.</span></div>
+    <div class="tool"><span class="tag">항공</span><span class="nm"><a href="https://map.vworld.kr/" target="_blank" rel="noopener">브이월드 항공사진</a></span>
+      <span class="ds">위에서 내려다본 도로 전체 폭을 확인해 차도와 보도의 비율을 계산할 때 씁니다.</span></div>
+    <div class="tool"><span class="tag">사고</span><span class="nm"><a href="https://taas.koroad.or.kr/web/shp/sbm/initGisAnals.do?menuId=WEB_KMP_GIS_TAS" target="_blank" rel="noopener">TAAS 교통사고 GIS 분석</a></span>
+      <span class="ds">우리 답사 구간에 보행자 사고가 실제로 몰려 있는지 지도로 확인합니다.</span></div>
+    <div class="tool"><span class="tag">제안</span><span class="nm"><a href="https://www.epeople.go.kr/" target="_blank" rel="noopener">국민신문고</a></span>
+      <span class="ds">모둠이 찾은 문제를 담당 지자체에 실제로 제안할 수 있는 창구입니다. 학교와 상의한 뒤 진행하세요.</span></div>
   </div>
-</section>
 
-<!-- ══ Ⅴ ══ -->
-<section id="s5">
-  <div class="shead"><span class="rn">Ⅴ</span><h2>우리 동네 보행도시 재설계</h2><span class="kind">모둠 활동</span></div>
-  <p class="read col">답사에서 가장 문제가 컸던 구간 한 곳을 골라, 유니버설 디자인 관점에서 다시 설계한다. <b>예산과 반대 의견을 반드시 고려할 것.</b></p>
-
-  <div class="tw" style="margin-top:22px"><table>
-    <thead><tr><th style="width:150px">항목</th><th>내용</th></tr></thead>
-    <tbody>
-      <tr><td class="lab">대상 구간</td><td><input class="cell" type="text" name="Ⅴ-구간" placeholder="예: ○○초등학교 앞 ~ ○○사거리 (약 300m)"></td></tr>
-      <tr><td class="lab">진단 (증거 포함)</td><td><textarea name="Ⅴ-진단" rows="3" placeholder="Ⅳ의 측정값, TAAS 사고 지점, 로드뷰 관찰 내용을 근거로"></textarea></td></tr>
-      <tr><td class="lab">설계 원칙</td><td><textarea name="Ⅴ-원칙" rows="3" placeholder="이 구간을 다시 만든다면 무엇을 기준값으로 삼을 것인가"></textarea></td></tr>
-    </tbody></table></div>
-
-  <div class="q"><div class="qt"><span class="qn">단계</span><span>실행 계획을 기간별로 나누어 적으시오. 돈이 적게 드는 것부터 먼저 배치할 것.</span></div>
-    <div class="tw"><table>
-      <thead><tr><th style="width:33%">당장 할 수 있는 것 (비용 小)</th><th style="width:33%">1~2년 안에 할 것</th><th>장기 과제</th></tr></thead>
-      <tbody><tr>
-        <td><textarea name="Ⅴ-단기" rows="5"></textarea></td>
-        <td><textarea name="Ⅴ-중기" rows="5"></textarea></td>
-        <td><textarea name="Ⅴ-장기" rows="5"></textarea></td>
-      </tr></tbody></table></div></div>
-
-  <div class="q"><div class="qt"><span class="qn">검토</span><span>이해관계자 검토 — 우리 제안에 누가 반대할까?</span></div>
-    <div class="tw"><table>
-      <thead><tr><th style="width:150px">이해관계자</th><th style="width:38%">예상되는 반대 이유</th><th>우리의 대응</th></tr></thead>
-      <tbody>
-        <tr><td class="lab">인근 상인</td><td><textarea name="Ⅴ-상인-반대" rows="2"></textarea></td><td><textarea name="Ⅴ-상인-대응" rows="2"></textarea></td></tr>
-        <tr><td class="lab">승용차 통근자</td><td><textarea name="Ⅴ-통근자-반대" rows="2"></textarea></td><td><textarea name="Ⅴ-통근자-대응" rows="2"></textarea></td></tr>
-        <tr><td class="lab">지자체 (예산)</td><td><textarea name="Ⅴ-지자체-반대" rows="2"></textarea></td><td><textarea name="Ⅴ-지자체-대응" rows="2"></textarea></td></tr>
-        <tr><td class="lab"><input class="cell" type="text" name="Ⅴ-기타-이해관계자" placeholder="직접 쓰기"></td><td><textarea name="Ⅴ-기타-반대" rows="2"></textarea></td><td><textarea name="Ⅴ-기타-대응" rows="2"></textarea></td></tr>
-      </tbody></table></div></div>
-
-  <div class="tools">
-    <h4>제안을 실제로 보내려면</h4>
-    <p class="lead">수업으로 끝내지 않고 싶다면, 모둠의 제안을 실제 창구에 보낼 수 있다. 학교와 상의한 뒤 진행하자.</p>
-    <div class="tool"><span class="tag">참여</span><span class="nm"><a href="https://www.epeople.go.kr/" target="_blank" rel="noopener">국민신문고</a></span>
-      <span class="ds">도로·보행 시설의 개선을 담당 지자체에 직접 제안할 수 있는 국가 창구. 위치와 사진, 개선 요청을 함께 적으면 된다.</span></div>
-    <div class="tool"><span class="tag">데이터</span><span class="nm"><a href="https://www.data.go.kr/" target="_blank" rel="noopener">공공데이터포털</a></span>
-      <span class="ds">보행자 사고 다발지역, 어린이보호구역, 보도 현황 데이터를 내려받아 제안서의 근거로 붙일 수 있다.</span></div>
-    <div class="tool"><span class="tag">참고</span><span class="nm"><a href="https://www.auri.re.kr/publication/view.es?mid=a10313000000&amp;publication_type=brief&amp;publication_id=1810" target="_blank" rel="noopener">건축공간연구원 · 안전속도 5030 이후의 과제</a></span>
-      <span class="ds">저속 도로환경에서 보행안전을 높이는 구체적 설계 제안을 담은 연구 브리프. 우리 제안의 수준을 한 단계 올려 준다.</span></div>
+  <div class="pager">
+    <button class="pgbtn" type="button" data-go="s3">← 이전 · Ⅲ 걷는 도시</button>
+    <button class="pgbtn next" type="button" data-go="s6">다음 · Ⅵ 토론 →</button>
   </div>
 </section>
 
 <!-- ══ Ⅵ ══ -->
-<section id="s6">
+<section id="s6" role="tabpanel" aria-labelledby="t-s6" hidden>
   <div class="shead"><span class="rn">Ⅵ</span><h2>도로를 사람에게 돌려주는 일은 정의로운가</h2><span class="kind">토론</span></div>
   <div class="key" style="margin-top:0">
     <h4 style="margin-bottom:6px">논제</h4>
@@ -590,10 +861,15 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
   <div class="q"><div class="qt"><span class="qn">입장</span><span>토론 후 나의 입장 — 상대편의 가장 강한 논거를 먼저 인정한 뒤 서술할 것.</span></div>
     <p class="hint">“상대편의 ○○라는 지적은 타당하다. 그럼에도 나는 …” 형식으로 시작해 보자.</p>
     <textarea name="Ⅵ-입장" rows="5"></textarea></div>
+
+  <div class="pager">
+    <button class="pgbtn" type="button" data-go="s4">← 이전 · Ⅳ 현장 답사</button>
+    <button class="pgbtn next" type="button" data-go="s7">다음 · Ⅶ 정리 →</button>
+  </div>
 </section>
 
 <!-- ══ Ⅶ ══ -->
-<section id="s7">
+<section id="s7" role="tabpanel" aria-labelledby="t-s7" hidden>
   <div class="shead"><span class="rn">Ⅶ</span><h2>정리 및 성찰</h2><span class="kind">마무리</span></div>
   <p style="font-family:var(--disp);font-size:14.5px;font-weight:700;margin-bottom:2px">오늘 얻은 개념어</p>
   <p style="font-family:var(--disp);font-size:13px;color:var(--muted)">내 언어로 설명할 수 있게 된 것에 표시하세요.</p>
@@ -618,6 +894,11 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
     <p style="font-family:var(--disp);font-size:16.5px;font-weight:700;line-height:1.6;margin-bottom:12px">“걷기 좋은 도시”와 “정의로운 도시”는 같은 말일까, 다른 말일까?</p>
     <p style="font-family:var(--disp);font-size:13px;color:var(--muted);margin-bottom:10px">이번 두 차시의 경험을 근거로 답하시오.</p>
     <textarea name="Ⅶ-마지막" rows="6"></textarea>
+  </div>
+
+  <div class="pager">
+    <button class="pgbtn" type="button" data-go="s6">← 이전 · Ⅵ 토론</button>
+    <button class="pgbtn next" type="button" id="pgDone">제출 화면으로 →</button>
   </div>
 </section>
 </main>
@@ -700,6 +981,283 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
     draw();
   });
 
+
+  /* ── 슬리피 지도 (라이브러리 없이 직접 구현) ── */
+  var TYPES=[
+    {k:'stair', n:'계단만 있음 (경사로 없음)', c:'#C0392B'},
+    {k:'step',  n:'문턱 / 단차',            c:'#E0A82E'},
+    {k:'narrow',n:'좁은 통로',              c:'#8E6FC4'},
+    {k:'broken',n:'파손된 보도블록',        c:'#A9541F'},
+    {k:'good',  n:'접근성 좋음 (칭찬해요)', c:'#1B6B58'},
+    {k:'etc',   n:'기타',                   c:'#6E7275'}
+  ];
+  var HOME={lat:37.3315,lng:127.0980,z:14};   /* 이우학교~미금역~동천역~수지구청역 포함 */
+  var TS=256, map=document.getElementById('map'), canvas=document.getElementById('mapcanvas');
+  var view={z:HOME.z,ox:0,oy:0}, recs=[], active=null, panMode=false;
+  var recWrap=document.getElementById('records');
+
+  function lng2x(lng,z){ return (lng+180)/360*TS*Math.pow(2,z); }
+  function lat2y(lat,z){ var r=lat*Math.PI/180;
+    return (1-Math.log(Math.tan(r)+1/Math.cos(r))/Math.PI)/2*TS*Math.pow(2,z); }
+  function x2lng(x,z){ return x/(TS*Math.pow(2,z))*360-180; }
+  function y2lat(y,z){ var n=Math.PI-2*Math.PI*y/(TS*Math.pow(2,z));
+    return 180/Math.PI*Math.atan(0.5*(Math.exp(n)-Math.exp(-n))); }
+
+  function centerOn(lat,lng,z){
+    if(z) view.z=z;
+    view.ox=lng2x(lng,view.z)-map.clientWidth/2;
+    view.oy=lat2y(lat,view.z)-map.clientHeight/2;
+    render();
+  }
+  function render(){
+    if(!map) return;
+    var W=map.clientWidth,H=map.clientHeight,n=Math.pow(2,view.z);
+    var frag=document.createDocumentFragment();
+    var x0=Math.floor(view.ox/TS), x1=Math.floor((view.ox+W)/TS);
+    var y0=Math.floor(view.oy/TS), y1=Math.floor((view.oy+H)/TS);
+    for(var ty=y0;ty<=y1;ty++){
+      if(ty<0||ty>=n) continue;
+      for(var tx=x0;tx<=x1;tx++){
+        var wx=((tx%n)+n)%n;
+        var img=document.createElement('img');
+        img.src='https://tile.openstreetmap.org/'+view.z+'/'+wx+'/'+ty+'.png';
+        img.alt=''; img.loading='lazy';
+        img.addEventListener('error',function(){this.style.visibility='hidden';});
+        img.style.left=(tx*TS-view.ox)+'px'; img.style.top=(ty*TS-view.oy)+'px';
+        frag.appendChild(img);
+      }
+    }
+    recs.forEach(function(r,i){
+      if(r.lat==null) return;
+      var T=TYPES.filter(function(t){return t.k===r.type;})[0]||TYPES[5];
+      var p=document.createElement('div');
+      p.className='pin'+(active===r?' act':'');
+      p.style.background=T.c;
+      p.style.left=(lng2x(r.lng,view.z)-view.ox)+'px';
+      p.style.top=(lat2y(r.lat,view.z)-view.oy)+'px';
+      p.title=(r.place||'제보 '+(i+1))+' — '+T.n;
+      p.innerHTML='<span>'+(i+1)+'</span>';
+      p.addEventListener('click',function(ev){ ev.stopPropagation(); focusRec(r); });
+      frag.appendChild(p);
+    });
+    canvas.innerHTML=''; canvas.appendChild(frag);
+  }
+
+  if(map){
+    /* 드래그 이동 */
+    var dragging=false,moved=false,sx=0,sy=0,sox=0,soy=0;
+    map.addEventListener('pointerdown',function(e){
+      if(e.target.closest('.mapctl')||e.target.closest('.pin')) return;
+      dragging=true;moved=false;sx=e.clientX;sy=e.clientY;sox=view.ox;soy=view.oy;
+      map.setPointerCapture(e.pointerId); map.classList.add('drag');
+    });
+    map.addEventListener('pointermove',function(e){
+      if(!dragging) return;
+      var dx=e.clientX-sx, dy=e.clientY-sy;
+      if(Math.abs(dx)>3||Math.abs(dy)>3) moved=true;
+      view.ox=sox-dx; view.oy=soy-dy; render();
+    });
+    map.addEventListener('pointerup',function(e){
+      if(!dragging) return;
+      dragging=false; map.classList.remove('drag');
+      if(moved) return;
+      if(e.target.closest('.mapctl')||e.target.closest('.pin')) return;
+      if(panMode) return;
+      var rect=map.getBoundingClientRect();
+      var wx=view.ox+(e.clientX-rect.left), wy=view.oy+(e.clientY-rect.top);
+      addRec({lat:y2lat(wy,view.z),lng:x2lng(wx,view.z)});
+    });
+    map.addEventListener('pointercancel',function(){dragging=false;map.classList.remove('drag');});
+    document.getElementById('zin').addEventListener('click',function(){zoomBy(1);});
+    document.getElementById('zout').addEventListener('click',function(){zoomBy(-1);});
+    document.getElementById('zhome').addEventListener('click',function(){centerOn(HOME.lat,HOME.lng,HOME.z);});
+    function zoomBy(d){
+      var nz=Math.max(11,Math.min(19,view.z+d)); if(nz===view.z) return;
+      var W=map.clientWidth/2,H=map.clientHeight/2,f=Math.pow(2,nz-view.z);
+      view.ox=(view.ox+W)*f-W; view.oy=(view.oy+H)*f-H; view.z=nz; render();
+    }
+    window.addEventListener('resize',render);
+    /* 마우스 모드 — 제보 찍기 / 지도 이동(손모양) */
+    var bPin=document.getElementById('mdPin'), bPan=document.getElementById('mdPan'),
+        hint=document.getElementById('mthint');
+    function setMode(pan){
+      panMode=pan;
+      map.classList.toggle('panmode',pan); map.classList.toggle('pinmode',!pan);
+      bPan.classList.toggle('on',pan); bPin.classList.toggle('on',!pan);
+      hint.textContent = pan
+        ? '손 모양으로 지도를 잡아끌어 이동합니다. 클릭해도 핀이 생기지 않습니다.'
+        : '지도를 클릭하면 그 자리에 핀이 꽂힙니다. 끌면 이동도 됩니다.';
+    }
+    bPin.addEventListener('click',function(){setMode(false);});
+    bPan.addEventListener('click',function(){setMode(true);});
+    /* 제보 지도 / 구글 지도 전환 */
+    var osmBtn=document.getElementById('mvOsm'), gooBtn=document.getElementById('mvGoo'),
+        gmap=document.getElementById('gmap'), mtools=document.getElementById('maptools');
+    function setView(goo){
+      map.hidden=goo; gmap.hidden=!goo; mtools.hidden=goo;
+      gooBtn.classList.toggle('on',goo); osmBtn.classList.toggle('on',!goo);
+      if(!goo) setTimeout(render,50);
+    }
+    osmBtn.addEventListener('click',function(){setView(false);});
+    gooBtn.addEventListener('click',function(){setView(true);});
+    var help=document.getElementById('maphelp');
+    if(help) help.addEventListener('click',function(){
+      if(!help.classList.contains('go')) return;
+      var el=document.getElementById('rec-'+help.dataset.rid);
+      if(el){ el.scrollIntoView({block:'center',behavior:'smooth'});
+        var f=el.querySelector('input[type=text]'); if(f) setTimeout(function(){f.focus();},450); }
+    });
+  }
+
+  /* ── 제보 ── */
+  function tallyDraw(){
+    var box=document.getElementById('tally'); if(!box) return;
+    box.innerHTML='';
+    TYPES.forEach(function(T){
+      var n=recs.filter(function(r){return r.type===T.k;}).length;
+      var d=document.createElement('div'); d.className='tl'+(n?'':' zero');
+      d.innerHTML='<span class="dot" style="background:'+T.c+'"></span><span>'+T.n+'</span><span class="n">'+n+'</span>';
+      box.appendChild(d);
+    });
+    document.getElementById('reccount').textContent='등록된 제보 '+recs.length+'건';
+    document.getElementById('emptyrec').hidden = recs.length>0;
+  }
+  function addRec(pos){
+    var r={id:Date.now()+'-'+recs.length,type:'stair',place:'',lat:pos?pos.lat:null,lng:pos?pos.lng:null,
+           level:'',desc:'',alt:'',photo:''};
+    recs.push(r); renderRecs(); save(); active=r; renderRecs();
+    var help=document.getElementById('maphelp');
+    if(help){ help.textContent='제보 '+recs.length+'건 등록됨 — 눌러서 기록하러 가기';
+      help.classList.add('go'); help.dataset.rid=r.id; }
+  }
+  function focusRec(r,scroll){
+    active=r; renderRecs();
+    if(r.lat!=null && map) centerOn(r.lat,r.lng);
+    var el=document.getElementById('rec-'+r.id);
+    if(el&&scroll){ el.scrollIntoView({block:'center',behavior:'smooth'});
+      var f=el.querySelector('input[type=text]'); if(f) setTimeout(function(){f.focus();},250); }
+  }
+  function shrinkImage(file,cb){
+    var fr=new FileReader();
+    fr.onload=function(){
+      var im=new Image();
+      im.onload=function(){
+        var MX=720, sc=Math.min(1,MX/Math.max(im.width,im.height));
+        var cv=document.createElement('canvas');
+        cv.width=Math.round(im.width*sc); cv.height=Math.round(im.height*sc);
+        cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
+        cb(cv.toDataURL('image/jpeg',0.62));
+      };
+      im.onerror=function(){cb('');};
+      im.src=fr.result;
+    };
+    fr.onerror=function(){cb('');};
+    fr.readAsDataURL(file);
+  }
+  function recCard(r,i){
+    var T=TYPES.filter(function(t){return t.k===r.type;})[0]||TYPES[5];
+    var el=document.createElement('div'); el.className='rec'+(active===r?' act':''); el.id='rec-'+r.id;
+
+    var top=document.createElement('div'); top.className='rectop';
+    var no=document.createElement('span'); no.className='recno';
+    no.textContent='제보 '+(i+1); no.style.background=T.c;
+    var sel=document.createElement('select'); sel.setAttribute('aria-label','제보 '+(i+1)+' 유형');
+    TYPES.forEach(function(t){
+      var o=document.createElement('option'); o.value=t.k; o.textContent=t.n;
+      if(r.type===t.k) o.selected=true; sel.appendChild(o);
+    });
+    sel.addEventListener('change',function(){r.type=sel.value;renderRecs();render();save();});
+    var loc=document.createElement('span');
+    if(r.lat!=null){ loc.className='recloc'; loc.textContent=r.lat.toFixed(5)+', '+r.lng.toFixed(5); }
+    else { loc.className='recloc none'; loc.textContent='위치 미지정'; }
+    var del=document.createElement('button'); del.type='button'; del.className='recdel'; del.textContent='삭제';
+    del.addEventListener('click',function(){
+      if(!confirm('이 제보를 삭제할까요?')) return;
+      recs.splice(recs.indexOf(r),1); if(active===r) active=null; renderRecs(); render(); save();
+    });
+    top.appendChild(no); top.appendChild(sel); top.appendChild(loc); top.appendChild(del);
+    el.appendChild(top);
+
+    var g=document.createElement('div'); g.className='recgrid';
+
+    var w1=document.createElement('div'); w1.className='rf';
+    var l1=document.createElement('label'); l1.textContent='장소 이름'; l1.setAttribute('for','p-'+r.id);
+    var i1=document.createElement('input'); i1.type='text'; i1.id='p-'+r.id;
+    i1.placeholder='예: 동천초 정문 앞 횡단보도'; i1.value=r.place||'';
+    i1.addEventListener('input',function(){r.place=i1.value;save();});
+    w1.appendChild(l1); w1.appendChild(i1); g.appendChild(w1);
+
+    var w2=document.createElement('div'); w2.className='rf';
+    var l2=document.createElement('label'); l2.textContent='얼마나 불편한가';
+    var lv=document.createElement('div'); lv.className='lvl';
+    [['1','거의 불편 없음'],['2','조금'],['3','보통'],['4','많이'],['5','통행 불가']].forEach(function(o){
+      var lb=document.createElement('label');
+      var rd=document.createElement('input'); rd.type='radio'; rd.name='lvl-'+r.id; rd.value=o[0];
+      if(r.level===o[0]) rd.checked=true;
+      rd.addEventListener('change',function(){r.level=o[0];save();});
+      lb.appendChild(rd); lb.appendChild(document.createTextNode(o[0]+' '+o[1]));
+      lv.appendChild(lb);
+    });
+    w2.appendChild(l2); w2.appendChild(lv); g.appendChild(w2);
+
+    var w3=document.createElement('div'); w3.className='rf full';
+    var l3=document.createElement('label'); l3.textContent='설명 — 무엇이 어떻게 불편한가 (측정값 포함)';
+    l3.setAttribute('for','d-'+r.id);
+    var t3=document.createElement('textarea'); t3.id='d-'+r.id; t3.rows=3;
+    t3.placeholder='예: 보도 폭이 1.1m로 좁아 휠체어와 유아차가 마주 지나갈 수 없다. 연석 단차 6cm를 줄자로 측정.';
+    t3.value=r.desc||'';
+    t3.addEventListener('input',function(){r.desc=t3.value;save();});
+    w3.appendChild(l3); w3.appendChild(t3); g.appendChild(w3);
+
+    var w4=document.createElement('div'); w4.className='rf full';
+    var l4=document.createElement('label'); l4.textContent='우리가 제안하는 대안';
+    l4.setAttribute('for','a-'+r.id);
+    var t4=document.createElement('textarea'); t4.id='a-'+r.id; t4.rows=3;
+    t4.placeholder='예: 화단을 30cm 줄여 보도를 1.8m로 넓히고, 연석을 경사형으로 교체한다.';
+    t4.value=r.alt||'';
+    t4.addEventListener('input',function(){r.alt=t4.value;save();});
+    w4.appendChild(l4); w4.appendChild(t4); g.appendChild(w4);
+
+    var w5=document.createElement('div'); w5.className='rf full';
+    var l5=document.createElement('label'); l5.textContent='현장 사진';
+    var ph=document.createElement('div'); ph.className='photo';
+    var fi=document.createElement('input'); fi.type='file'; fi.accept='image/*';
+    fi.setAttribute('capture','environment'); fi.hidden=true; fi.id='f-'+r.id;
+    var bt=document.createElement('button'); bt.type='button'; bt.className='photobtn';
+    bt.textContent=r.photo?'사진 바꾸기':'사진 찍기 · 고르기';
+    bt.addEventListener('click',function(){fi.click();});
+    fi.addEventListener('change',function(){
+      var f=fi.files&&fi.files[0]; if(!f) return;
+      shrinkImage(f,function(d){ r.photo=d; renderRecs(); save(); });
+    });
+    if(r.photo){
+      var im=document.createElement('img'); im.src=r.photo; im.alt=(r.place||'제보 '+(i+1))+' 현장 사진';
+      ph.appendChild(im);
+      var rm=document.createElement('button'); rm.type='button'; rm.className='photobtn'; rm.textContent='사진 삭제';
+      rm.addEventListener('click',function(){r.photo='';renderRecs();save();});
+      ph.appendChild(bt); ph.appendChild(rm);
+    } else { ph.appendChild(bt); }
+    ph.appendChild(fi);
+    w5.appendChild(l5); w5.appendChild(ph); g.appendChild(w5);
+
+    if(r.lat!=null){
+      var w6=document.createElement('div'); w6.className='rf full';
+      var lk=document.createElement('button'); lk.type='button'; lk.className='locate';
+      lk.textContent='지도에서 이 제보 위치 보기';
+      lk.addEventListener('click',function(){ focusRec(r); map.scrollIntoView({block:'center',behavior:'smooth'}); });
+      w6.appendChild(lk); g.appendChild(w6);
+    }
+    el.appendChild(g);
+    return el;
+  }
+  function renderRecs(){
+    recWrap.innerHTML='';
+    recs.forEach(function(r,i){recWrap.appendChild(recCard(r,i));});
+    tallyDraw(); render();
+  }
+  var addBtn=document.getElementById('addrec');
+  if(addBtn) addBtn.addEventListener('click',function(){ addRec(null); });
+
   /* ── 저장 / 복원 ── */
   var fields=Array.prototype.slice.call(
     document.querySelectorAll('input[name], textarea[name], select[name]'));
@@ -712,6 +1270,7 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
       o[el.name]= el.type==='checkbox' ? el.checked : el.value;
     });
     document.querySelectorAll('.cut').forEach(function(c){o._cut[c.getAttribute('data-cut')]=c._vals;});
+    o._recs=recs;
     return o;
   }
   function save(){
@@ -742,6 +1301,7 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
       });
       c._draw();
     });
+    if(Array.isArray(o._recs)){ recs=o._recs; renderRecs(); }
     savedEl.textContent='이전 작업 불러옴';
   }
 
@@ -753,8 +1313,8 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
     document.getElementById('pnum').textContent=done+' / '+writables.length;
   }
   fields.forEach(function(el){
-    el.addEventListener('input',function(){save();progress();});
-    el.addEventListener('change',function(){save();progress();});
+    el.addEventListener('input',function(){save();progress();markDone();});
+    el.addEventListener('change',function(){save();progress();markDone();});
   });
 
   /* ── 내보내기 ── */
@@ -781,6 +1341,20 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
              '  → 총폭 '+tot.toFixed(1)+'m, 차량 점유 '+Math.round((v.car+v.park)/tot*100)+'%');
       L.push('');
     });
+    if(recs.length){
+      L.push('[현장 제보 '+recs.length+'건]');
+      var LV={'1':'거의 불편 없음','2':'조금','3':'보통','4':'많이','5':'통행 불가'};
+      recs.forEach(function(r,i){
+        var T=TYPES.filter(function(x){return x.k===r.type;})[0];
+        L.push((i+1)+'. ['+(T?T.n:r.type)+'] '+(r.place||'장소명 미기재'));
+        if(r.lat!=null) L.push('   좌표: '+r.lat.toFixed(5)+', '+r.lng.toFixed(5));
+        if(r.level)  L.push('   불편 정도: '+r.level+' ('+(LV[r.level]||'')+')');
+        if(r.desc)   L.push('   설명: '+r.desc);
+        if(r.alt)    L.push('   제안하는 대안: '+r.alt);
+        if(r.photo)  L.push('   현장 사진: 있음 (활동지 화면에서 확인)');
+      });
+      L.push('');
+    }
     if(concepts.length){ L.push('[설명할 수 있게 된 개념어]'); L.push(concepts.join(', ')); }
     var txt=L.join('\n');
     if(navigator.clipboard&&navigator.clipboard.writeText){
@@ -800,11 +1374,71 @@ footer{padding:22px 0 34px;font-family:var(--disp);font-size:12px;color:var(--fa
   document.getElementById('clear').addEventListener('click',function(){
     if(!confirm('작성한 내용을 모두 지웁니다. 되돌릴 수 없습니다. 계속할까요?')) return;
     fields.forEach(function(el){ if(el.type==='checkbox') el.checked=false; else el.value=''; });
+    recs=[]; active=null; renderRecs();
     try{ localStorage.removeItem(KEY); }catch(e){}
     progress(); savedEl.textContent='초기화됨'; toast('모두 지웠습니다.');
   });
 
-  restore(); progress();
+  if(map) centerOn(HOME.lat,HOME.lng,HOME.z);
+  renderRecs();
+  /* ── 탭 전환 ── */
+  var TABS=['s1','s2','s3','s4','s6','s7'];
+  function showTab(id,noScroll){
+    if(TABS.indexOf(id)<0) id=TABS[0];
+    TABS.forEach(function(t){
+      var sec=document.getElementById(t), btn=document.getElementById('t-'+t);
+      if(!sec||!btn) return;
+      var on=(t===id);
+      sec.hidden=!on;
+      btn.setAttribute('aria-selected',on?'true':'false');
+      btn.tabIndex=on?0:-1;
+    });
+    try{ localStorage.setItem(KEY+'-tab',id); }catch(e){}
+    if(!noScroll){
+      var r=document.querySelector('.rail');
+      var y=r?r.getBoundingClientRect().height:0;
+      var top=document.getElementById(id).getBoundingClientRect().top+window.pageYOffset-y-8;
+      window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+    }
+    if(id==='s4' && typeof render==='function') setTimeout(render,60);
+    markDone();
+  }
+  function markDone(){
+    TABS.forEach(function(t){
+      var sec=document.getElementById(t), btn=document.getElementById('t-'+t);
+      if(!sec||!btn) return;
+      var fs=sec.querySelectorAll('input[type=text],textarea');
+      var n=0,tot=fs.length;
+      Array.prototype.forEach.call(fs,function(f){ if(f.value.trim()!=='') n++; });
+      if(t==='s4'&&typeof recs!=='undefined'&&recs.length) n++;
+      btn.classList.toggle('done', tot>0 && n>=Math.ceil(tot*0.8));
+    });
+  }
+  TABS.forEach(function(t){
+    var btn=document.getElementById('t-'+t);
+    if(btn) btn.addEventListener('click',function(){showTab(t);});
+  });
+  document.querySelectorAll('.pgbtn[data-go]').forEach(function(b){
+    b.addEventListener('click',function(){showTab(b.getAttribute('data-go'));});
+  });
+  var tl=document.querySelector('.tabs');
+  if(tl) tl.addEventListener('keydown',function(e){
+    var i=TABS.indexOf((document.querySelector('.tab[aria-selected="true"]')||{}).id&&
+        document.querySelector('.tab[aria-selected="true"]').id.slice(2));
+    if(e.key==='ArrowRight'&&i<TABS.length-1){ showTab(TABS[i+1]); document.getElementById('t-'+TABS[i+1]).focus(); }
+    if(e.key==='ArrowLeft'&&i>0){ showTab(TABS[i-1]); document.getElementById('t-'+TABS[i-1]).focus(); }
+  });
+  function toExport(){
+    var ex=document.querySelector('.export');
+    if(ex) ex.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  var je=document.getElementById('jumpExport'); if(je) je.addEventListener('click',toExport);
+  var pd=document.getElementById('pgDone'); if(pd) pd.addEventListener('click',toExport);
+
+  var startTab='s1';
+  try{ startTab=localStorage.getItem(KEY+'-tab')||'s1'; }catch(e){}
+  showTab(startTab,true);
+  restore(); progress(); markDone();
 })();
 </script>
 </body>
